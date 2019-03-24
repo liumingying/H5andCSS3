@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        #memo:focus{
+            border-style:solid;  
+            border-color: #e9b76e;
+            border-width: 2px;
+            outline:none;
+        }
+        #div{
+            width:350px;
+            border:solid 1px #e0e0e0;
+            position: fixed;
+        }
+        #delete{
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            outline:none;
+            color: white;
+            background-color:#e0e0e0;
+            float: right;
+            cursor:pointer;
+            right: 20px;
+
+        }
+        #p{
+            display:inline;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div id="div">
+    <input type="search" placeholder="请输入想查找的商品" style="height:30px" id="memo">
+    <input type="button" value="搜索" style="width: 100px; height:30PX;" onclick="saveStorage('memo')">
+    
+    <h4>最近搜索</h4>
+    <p id="msg" id="p"></p>
+    <span onclick="clearStorage('msg');" id="delete">X</span>
+    </div>  
+</body>
+<script>
+    function saveStorage(id){
+        var data = document.getElementById(id).value;
+        var time = new Date().getTime();
+        localStorage.setItem(time,data);
+        loadStorage('msg');
+    }
+    function loadStorage(id){
+        var result='' ;
+        for(var i=0;i<localStorage.length;i++){
+            var key1 =  localStorage.key(i);
+            var value1 = localStorage.getItem(key1);
+            for(var j=i+1;j<=localStorage.length;j++){
+                var key2 = localStorage.key(j);
+                var value2 = localStorage.getItem(key2);
+                if(value1 == value2){
+                    localStorage.removeItem(key2);
+                } 
+            }
+
+        } 
+        for(var i=0;i<localStorage.length;i++){
+            var key = localStorage.key(i);
+            var value = localStorage.getItem(key);
+            
+            result += '<span style="background-color:#e0e0e0;  display:inline-block; line-height:15px;">' + value + '</span>'+'&nbsp&nbsp&nbsp';
+        }
+
+        var target = document.getElementById(id);
+         target.innerHTML = result;
+         if(target.innerHTML.length>'200px'){
+            target.innerHTML += '<br>';
+         }
+        return target.innerHTML;
+    }
+    function clearStorage() {
+        alert(localStorage.length);
+        if(localStorage.length){
+            localStorage.clear();
+            loadStorage('msg');
+        }else{
+            var target = document.getElementById('msg');
+            target.innerHTML ='&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+ '<span>' + '无存储记录' + '</span>'+'&nbsp&nbsp&nbsp';
+            return target.innerHTML;
+        }
+        
+    }
+    //去重  没有东西时显示 ：无存储记录
+</script>
+</html>

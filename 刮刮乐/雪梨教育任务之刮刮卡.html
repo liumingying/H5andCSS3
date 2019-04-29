@@ -44,7 +44,7 @@
     context.globalCompositeOperation = "destination-out";
 
     canvas.onmousedown = function () {
-        if(judge()>=80){
+        if(judge()>=85){
             showResult();
         }else{
                 canvas.onmousemove = function(e){
@@ -62,9 +62,9 @@
         }
     }
 
-    //判断目前刮去的部分是否超过画布的80%
+    //判断目前刮去的部分是否超过画布的85%
     function judge(){
-        var imgData = context.getImageData(0, 0, 240, 65);
+        var imgData = context.getImageData(0, 0, 300, 300);
         var pixels = imgData.data;
         var transPixels = [];
         for(var i = 0; i < pixels.length; i += 4) {

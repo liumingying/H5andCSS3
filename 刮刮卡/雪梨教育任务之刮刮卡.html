@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #div1{
+            width: 300px;
+            height: 300px;
+            color:red;
+            text-align: center;
+            padding-top: 100px;
+            font-size: 50px;
+            font-weight: bold;
+            position: absolute;
+        }
+        #canvas{
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="div1"></div>
+    <canvas id="canvas" width="300" height="300"></canvas>
+
+</body>
+<script>
+
+    //1.将 canvas 画满一个遮罩层
+    var script = document.getElementById("div1");
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    context.fillStyle = "#d1d1d1";
+    context.fillRect(0, 0, 300, 300);// 绘制 "已填色" 的矩形（实心）
+    context.fill();
+    var arr = ["iphone XS Max","很遗憾未中奖","特等奖","精品水杯","李栋旭送你啦"];
+    var rr = arr[Math.floor(Math.random()*arr.length)];
+    script.innerHTML = rr;
+    //2.启用 globalCompositeOperation
+    //destination-out：在源图像外显示目标图像。只有源图像外的目标图像部分会被显示，源图像是透明的
+    context.globalCompositeOperation = "destination-out";
+
+    canvas.onmousedown = function () {
+        if(judge()>=80){
+            showResult();
+        }else{
+                canvas.onmousemove = function(e){
+                context.beginPath();
+                context.arc(e.pageX,e.pageY,20,0,Math.PI*2);
+                context.closePath();
+                context.fillStyle = '#dddddd';
+                context.fill();
+            }
+        }
+          
+    }
+    canvas.onmouseup = function(){
+        canvas.onmousemove = function(){
+        }
+    }
+
+    //判断目前刮去的部分是否超过画布的80%
+    function judge(){
+        var imgData = context.getImageData(0, 0, 240, 65);
+        var pixels = imgData.data;
+        var transPixels = [];
+        for(var i = 0; i < pixels.length; i += 4) {
+            // 严格上来说，判断像素点是否透明需要判断该像素点的a值是否等于0，
+            // 为了提高计算效率，这儿设置当a值小于128，也就是半透明状态时就可以了
+            if(pixels[i + 3] < 128) {
+                transPixels.push(pixels[i + 3]);
+            }
+        }
+		return(transPixels.length / (pixels.length / 4) * 100).toFixed(2) ;
+    }
+    
+    //清除画布
+    function showResult(){
+        context.clearRect(0, 0, 300, 300);
+    }
+
+</script>
+</html>
